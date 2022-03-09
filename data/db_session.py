@@ -30,4 +30,6 @@ def global_init(db_file: str):
 
 def create_session() -> Session:
     global __factory
+    if not __factory:
+        global_init('blogs.db')
     return __factory()
