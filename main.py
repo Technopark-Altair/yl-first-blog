@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from flask import Flask, render_template, request, make_response, session, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -193,7 +194,8 @@ def main():
 
     # для одного объекта
     api.add_resource(NewsResource, '/api/v2/news/<int:news_id>')
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
 
 
 if __name__ == '__main__':
