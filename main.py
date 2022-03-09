@@ -9,16 +9,19 @@ from werkzeug.utils import redirect
 from data import User, News, news_api, db_session, NewsListResource, NewsResource
 from forms import NewsForm, RegisterForm, LoginForm
 
-from flask_ngrok import run_with_ngrok
-
 
 app = Flask(__name__)
 api = Api(app)
-run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(
     days=365
 )
+app.register_blueprint(news_api.blueprint)
+# для списка объектов
+api.add_resource(NewsListResource, '/api/v2/news')
+
+# для одного объекта
+api.add_resource(NewsResource, '/api/v2/news/<int:news_id>')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -188,14 +191,9 @@ def session_test():
 
 def main():
     db_session.global_init("db/blogs.db")
-    app.register_blueprint(news_api.blueprint)
-    # для списка объектов
-    api.add_resource(NewsListResource, '/api/v2/news')
-
-    # для одного объекта
-    api.add_resource(NewsResource, '/api/v2/news/<int:news_id>')
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run()
+    # port = int(os.environ.get("PORT", 5000))
+    # app.run(host='0.0.0.0', port=port)
 
 
 if __name__ == '__main__':
